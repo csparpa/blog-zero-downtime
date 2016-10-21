@@ -2,11 +2,12 @@ import colorama
 import sys
 import requests
 
-DEFAULT_URL = 'http://localhost:8000/ping'
-DEFAULT_TIMEOUT_SECS = 0.01
+DEFAULT_URL = 'http://localhost:1234/ping'
+DEFAULT_TIMEOUT_SECS = 0.1
 
 if __name__ == '__main__':
-    url = sys.argv[1] if sys.argv[1] is not None else DEFAULT_URL
+    message_value = 'hey!'
+    url = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_URL
     try:
         while True:
             try:
@@ -14,9 +15,15 @@ if __name__ == '__main__':
                 if r.status_code != requests.codes.ok:
                     raise ValueError('Server returned error '
                                      'code: {}'.format(r.status_code))
-                message = 'UP: response was {}'.format(r.json())
+                data = r.json()
+                msg = data.get('message', '')
+                if msg == message_value:
+                    message = colorama.Fore.GREEN + 'UP: response was {}'.format(data)
+                else:
+                    message_value = msg
+                    message = colorama.Fore.YELLOW + 'UP AND CHANGED: response was {}'.format(data)
             except requests.exceptions.Timeout:
-                message = 'DOWN'
+                message = colorama.Fore.RED + 'DOWN'
             finally:
                 print(message)
     except ValueError:
