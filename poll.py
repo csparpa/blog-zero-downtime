@@ -21,7 +21,7 @@ if __name__ == '__main__':
                                      'code: {}'.format(r.status_code))
                 data = r.json()
                 msg = data.get('message', '')
-                if msg == EXPECTED_MESSAGE_VALUE:
+                if msg == message_value:
                     message = colorama.Fore.GREEN + 'UP: response was {}'.format(data)
                 else:
                     message_value = msg
